@@ -1,10 +1,9 @@
 package rose.wojcikmg.exam2wojcikmg;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,9 +29,9 @@ public class MainActivity extends AppCompatActivity {
         ItemTouchHelper.Callback callback= new SwipeItemTouchCallback(mStateAdaptor);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(view);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Toolbar top= findViewById(R.id.toolbar);
-       // top.se
+
 
 
     }

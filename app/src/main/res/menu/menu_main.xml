@@ -6,6 +6,8 @@
     android:layout_width="match_parent">
 
 
+    <TextView
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
