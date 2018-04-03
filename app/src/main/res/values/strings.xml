@@ -3,4 +3,21 @@
     <string name="defaultState">State Not Found</string>
     <string name="action_settings">Settings</string>
     <string name="scoreCounter">Score: %d</string>
+    <string name="action_shuffle">Shuffle</string>
+    <string name="action_order">Order</string>
+
+    <plurals name="score">
+        <item quantity="zero">Score: %d </item>
+        <item quantity="one">Score: %d </item>
+        <item quantity="other">Score: %d </item>
+    </plurals>
+
+    <string-array name="settings_items">
+        <item>Beginner (5)</item>
+        <item>Intermediate (10)</item>
+        <item>Expert (50)</item>
+    </string-array>
+
+
+
 </resources>

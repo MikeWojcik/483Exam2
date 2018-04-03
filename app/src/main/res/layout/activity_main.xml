@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="rose.wojcikmg.exam2wojcikmg.MainActivity"
-    android:theme="@style/AppTheme.NoActionBar"
+
 
 
     >

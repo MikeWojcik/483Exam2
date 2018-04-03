@@ -1,16 +1,35 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity"
     android:layout_height="100sp"
-    android:layout_width="match_parent">
-
-
-    <TextView
+    android:layout_width="match_parent"
+    >
 
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="102"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="always"
+        android:icon="@drawable/ic_settings_white_24dp"/>
+
+    <item
+        android:id="@+id/action_shuffle"
+        android:orderInCategory="101"
+        android:title="@string/action_shuffle"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_refresh_white_24dp"
+        ></item>
+
+        <item
+            android:id="@+id/action_order"
+            android:orderInCategory="99"
+            android:title="@string/action_order"
+            app:showAsAction="always"
+            android:icon="@drawable/ic_sort_white_24dp"
+            ></item>
+
+
+
 </menu>

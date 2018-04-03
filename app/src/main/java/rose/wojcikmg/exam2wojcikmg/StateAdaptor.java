@@ -4,7 +4,7 @@ package rose.wojcikmg.exam2wojcikmg;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,22 +20,21 @@ import java.util.Random;
 public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> implements ItemTouchHelperAdaptor{
 
     private Context myContext;
-    final ArrayList<Territory> mStates = new ArrayList<>();
-    private ArrayList<Territory> unusedStates;
+    ArrayList<Territory> mStates = new ArrayList<>();
+    private ArrayList<Territory> allStates;
     private Random mRandom = new Random();
     private int score;
     private int currentCapitalSelection;
-
-
+    private MainActivity m;
 
 
 
     public StateAdaptor(Context context){
 
         myContext = context;
-        unusedStates = new ArrayList<>();
+        allStates = new ArrayList<>();
         currentCapitalSelection = -1;
-        unusedStates.addAll(FileUtils.loadFromJsonArray(myContext));
+        allStates.addAll(FileUtils.loadFromJsonArray(myContext));
         score = 0;
 
         for(int i =0; i < 5; i++){
@@ -44,6 +43,12 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
 
 
     }
+
+    public StateAdaptor(Context context, MainActivity main){
+        this(context);
+        m = main;
+    }
+
 
     @Override
     public int getItemCount() {
@@ -70,11 +75,15 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
 
     public Territory addState(){
         //gets a random index
-        int rand = mRandom.nextInt(unusedStates.size());
+        int rand = mRandom.nextInt(allStates.size());
 
+        //loops until all states are unique
+        if(mStates.contains(allStates.get(rand))){
+            addState();
+        }
         //deletes from unused states so quiz can end after all states are done
-        Territory temp = unusedStates.get(rand);
-        unusedStates.remove(rand);
+        Territory temp = allStates.get(rand);
+        allStates.remove(rand);
 
         return temp;
     }
@@ -85,6 +94,20 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
 
     }
 
+    public void shuffle(){
+        ArrayList<Territory> temp = new ArrayList<>();
+        temp.addAll(mStates);
+
+        mStates = new ArrayList<>();
+        notifyDataSetChanged();
+
+        while(temp.size()!= 0){
+            int posToGet = mRandom.nextInt(temp.size());
+            mStates.add(temp.get(posToGet));
+            temp.remove(posToGet);
+        }
+    }
+
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
 
@@ -92,17 +115,32 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
 
     @Override
     public void onItemDismiss(int position, int direction) {
+        Log.d("Testing", direction + "DirFirst");
         if(position == currentCapitalSelection) {
-            if (direction == ItemTouchHelper.LEFT) {
-                score--;
 
-            } else if (direction == ItemTouchHelper.RIGHT) {
-                score += 2;
+            Log.d("Testing", direction + "Dir");
+            if (direction == 16) {
+                score -=1;
+                Log.d("Testing", "Left");
+
+            } else if (direction == 32) {
+                score +=2;
             }
+            currentCapitalSelection = -1;
+            updateScore();
             mStates.remove(position);
             notifyItemRemoved(position);
         }
+        else{
+            Log.d("Testing", "onItemDismiss: outOfPlace");
+            Log.d("Testing", mStates.size() + "");
+        }
 
+    }
+
+    public void updateScore(){
+        m.getSupportActionBar().setTitle(m.getResources().getQuantityString(R.plurals.score, this.score, this.score));
+        Log.d("Testing", "Score" + score);
     }
 
 

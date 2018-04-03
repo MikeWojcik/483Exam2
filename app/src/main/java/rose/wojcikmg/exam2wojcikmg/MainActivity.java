@@ -18,8 +18,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mStateAdaptor = new StateAdaptor(this);
+        mStateAdaptor = new StateAdaptor(this, MainActivity.this);
 
+        mStateAdaptor.updateScore();
 
         view = (RecyclerView)findViewById(R.id.list_view);
 
@@ -29,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
         ItemTouchHelper.Callback callback= new SwipeItemTouchCallback(mStateAdaptor);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(view);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
 
@@ -50,9 +50,18 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
                     return true;
 
+            case R.id.action_order:
+                    return true;
+
+            case R.id.action_shuffle:
+                mStateAdaptor.shuffle();
+                return true;
+
             default:
                 return true;
             }
         }
+
+
 
     }
