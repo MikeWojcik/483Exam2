@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Exam2Wojcikmg</string>
+    <string name="defaultState">State Not Found</string>
+    <string name="action_settings">Settings</string>
 </resources>
