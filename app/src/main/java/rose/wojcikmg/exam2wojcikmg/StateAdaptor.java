@@ -38,7 +38,7 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
         score = 0;
 
         for(int i =0; i < 5; i++){
-           mStates.add(addState());
+           addState();
         }
 
 
@@ -47,6 +47,14 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
     public StateAdaptor(Context context, MainActivity main){
         this(context);
         m = main;
+    }
+
+    public void setNumItems(int num){
+        mStates = new ArrayList<>();
+        for(int i = 0; i < num; i++){
+            addState();
+        }
+        notifyDataSetChanged();
     }
 
 
@@ -73,19 +81,18 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
 
     }
 
-    public Territory addState(){
+    public void addState(){
         //gets a random index
         int rand = mRandom.nextInt(allStates.size());
 
         //loops until all states are unique
         if(mStates.contains(allStates.get(rand))){
             addState();
+            return;
         }
         //deletes from unused states so quiz can end after all states are done
-        Territory temp = allStates.get(rand);
-        allStates.remove(rand);
+        mStates.add(allStates.get(rand));
 
-        return temp;
     }
 
     public void removeStateCapital(int pos){
@@ -93,6 +100,11 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
         currentCapitalSelection = pos;
 
     }
+
+    public void biggerState(){
+this.ge
+    }
+
 
     public void shuffle(){
         ArrayList<Territory> temp = new ArrayList<>();

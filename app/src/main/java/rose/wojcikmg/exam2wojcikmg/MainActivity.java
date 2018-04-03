@@ -1,12 +1,16 @@
 package rose.wojcikmg.exam2wojcikmg;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
 
             case R.id.action_settings:
+                settingsMenu();
                     return true;
 
             case R.id.action_order:
@@ -62,6 +67,53 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        private void settingsMenu(){
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            View settingView = getLayoutInflater().inflate(R.layout.dialog_settings, null, false);
+            builder.setView(settingView);
+
+//            View.OnClickListener buttonListener = new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    switch(view.getId()){
+//                        case R.id.beginnerButton:
+//                            mStateAdaptor.setNumItems(5);
+//                            builder.re
+//                    }
+//                }
+//            }
+
+//            final Button beginerButton = (Button)settingView.findViewById(R.id.beginnerButton);
+//            final Button InterButton = (Button)settingView.findViewById(R.id.intermediateButton);
+//            final Button expertButton = (Button)settingView.findViewById(R.id.expertButton);
+
+            builder.setItems(getResources().getStringArray(R.array.settings_items), new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    switch(i){
+                        case 0:
+                            mStateAdaptor.setNumItems(5);
+                            return;
+
+                        case 1:
+                            mStateAdaptor.setNumItems(10);
+                            return;
+
+                        case 2:
+                            mStateAdaptor.setNumItems(50);
+                            return;
+
+                        default:
+                            Log.d("Testing", "Error on Settings Select");
+                            return;
+                    }
+
+                }
+            });
+            builder.create().show();
+
+        }
 
 
     }

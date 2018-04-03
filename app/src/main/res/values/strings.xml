@@ -12,12 +12,14 @@
         <item quantity="other">Score: %d </item>
     </plurals>
 
+        <string name="Beginner">Beginner (5)</string>
+        <string name="Intermediate">Intermediate (10)</string>
+        <string name="Expert">Expert (50)</string>
+
     <string-array name="settings_items">
         <item>Beginner (5)</item>
         <item>Intermediate (10)</item>
         <item>Expert (50)</item>
     </string-array>
-
-
 
 </resources>
