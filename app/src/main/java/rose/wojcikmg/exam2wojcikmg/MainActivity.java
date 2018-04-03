@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
 
         mStateAdaptor = new StateAdaptor(this, MainActivity.this);
 
-        mStateAdaptor.updateScore();
 
         view = (RecyclerView)findViewById(R.id.list_view);
 
@@ -91,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
                             return;
 
                         default:
-                            Log.d("Testing", "Error on Settings Select");
                             return;
                     }
 

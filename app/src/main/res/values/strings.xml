@@ -12,14 +12,25 @@
         <item quantity="other">Score: %d </item>
     </plurals>
 
-        <string name="Beginner">Beginner (5)</string>
-        <string name="Intermediate">Intermediate (10)</string>
-        <string name="Expert">Expert (50)</string>
+    <string name="yesStr">Yes, </string>
+    <string name="noStr">No, </string>
+
+    <string name="Beginner">Beginner (5)</string>
+    <string name="Intermediate">Intermediate (10)</string>
+    <string name="Expert">Expert (50)</string>
 
     <string-array name="settings_items">
         <item>Beginner (5)</item>
         <item>Intermediate (10)</item>
         <item>Expert (50)</item>
     </string-array>
+
+    <string name="title_activity_fullscreen">DoneActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <plurals name="cograts">
+        <item quantity="zero"> Congratulations for earning %d points!</item>
+        <item quantity="other"> Congratulations for earning %d points!</item>
+    </plurals>
 
 </resources>

@@ -77,4 +77,9 @@ class Territory {
         capital = capital;
         area = area;
     }
+
+    @Override
+    public String toString() {
+        return name + " (" + area + ")";
+    }
 }

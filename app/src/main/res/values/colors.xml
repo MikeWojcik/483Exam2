@@ -4,4 +4,10 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="highlighted">#f5ea0b</color>
+
+    <color name="backgroundColor">#1b83c3</color>
+
+    <color name="whiteColor">#FFFF</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>
