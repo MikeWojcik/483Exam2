@@ -203,7 +203,7 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
 
 
                     }
-d
+
 
         @Override
         public void onItemSelected() {
