@@ -217,7 +217,7 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
     }
 
     private void checkBiggerStateCorrect(int i) {
-        if(s)
+        if(s)//checks state sizes
     }
 
     public class cardViewWrapper{
