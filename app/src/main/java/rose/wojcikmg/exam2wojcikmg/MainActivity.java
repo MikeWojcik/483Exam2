@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
 
             case R.id.action_order:
+                    mStateAdaptor.biggerState();
                     return true;
 
             case R.id.action_shuffle:
@@ -71,21 +72,6 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             View settingView = getLayoutInflater().inflate(R.layout.dialog_settings, null, false);
             builder.setView(settingView);
-
-//            View.OnClickListener buttonListener = new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    switch(view.getId()){
-//                        case R.id.beginnerButton:
-//                            mStateAdaptor.setNumItems(5);
-//                            builder.re
-//                    }
-//                }
-//            }
-
-//            final Button beginerButton = (Button)settingView.findViewById(R.id.beginnerButton);
-//            final Button InterButton = (Button)settingView.findViewById(R.id.intermediateButton);
-//            final Button expertButton = (Button)settingView.findViewById(R.id.expertButton);
 
             builder.setItems(getResources().getStringArray(R.array.settings_items), new DialogInterface.OnClickListener(){
                 @Override

@@ -3,6 +3,7 @@ package rose.wojcikmg.exam2wojcikmg;
 
 import android.content.Context;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,17 +21,18 @@ import java.util.Random;
 public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> implements ItemTouchHelperAdaptor{
 
     private Context myContext;
-    ArrayList<Territory> mStates = new ArrayList<>();
+    ArrayList<cardViewWrapper> mStates = new ArrayList<>();
     private ArrayList<Territory> allStates;
     private Random mRandom = new Random();
     private int score;
     private int currentCapitalSelection;
     private MainActivity m;
+    private cardViewWrapper[] sizeChoices;
 
 
 
     public StateAdaptor(Context context){
-
+        sizeChoices = new cardViewWrapper[0];
         myContext = context;
         allStates = new ArrayList<>();
         currentCapitalSelection = -1;
@@ -73,11 +75,14 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        Territory current = mStates.get(position);
+        Territory current = mStates.get(position).territory;
+
         //customize name
         String name = current.name;
         TextView nameTextView = holder.stateName;
         nameTextView.setText(name);
+
+        mStates.get(position).cardview = holder.card;
 
     }
 
@@ -91,23 +96,32 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
             return;
         }
         //deletes from unused states so quiz can end after all states are done
-        mStates.add(allStates.get(rand));
+        mStates.add(new cardViewWrapper(allStates.get(rand), null));
 
     }
 
     public void removeStateCapital(int pos){
-        Snackbar.make(MainActivity.view,mStates.get(pos).capital, Snackbar.LENGTH_INDEFINITE ).show();
+        Snackbar.make(MainActivity.view,mStates.get(pos).territory.capital, Snackbar.LENGTH_INDEFINITE ).show();
         currentCapitalSelection = pos;
 
     }
 
     public void biggerState(){
-this.ge
+        sizeChoices = new cardViewWrapper[2];
+
+       for(int i = 0; i < 2; i++) {
+           int toHighlight = mRandom.nextInt(mStates.size());
+           sizeChoices[i] = mStates.get(toHighlight);
+
+           sizeChoices[i].cardview.setCardBackgroundColor(m.getResources().getColor(R.color.highlighted));
+       }
+
+
     }
 
 
     public void shuffle(){
-        ArrayList<Territory> temp = new ArrayList<>();
+        ArrayList<cardViewWrapper> temp = new ArrayList<>();
         temp.addAll(mStates);
 
         mStates = new ArrayList<>();
@@ -158,6 +172,8 @@ this.ge
 
     public class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchViewHolder{
         TextView stateName;
+        CardView card;
+        boolean isHighlightedl;
 
 
         public ViewHolder(View retView){
@@ -167,16 +183,27 @@ this.ge
 
                 @Override
                 public void onClick(View view) {
-                    removeStateCapital(getAdapterPosition());
+                    //deals with normal senario
+                    if(sizeChoices.length ==0) {
+                        removeStateCapital(getAdapterPosition());
+                    }
+                    else{
+                        for(int i = 0; i < 2; i++){
+                            if(sizeChoices[i].cardview.getId() == card.getId()){
+                                checkBiggerStateCorrect(i);
+                            }
+                        }
+                    }
                 }
 
             });
 
             stateName = retView.findViewById(R.id.stateTextView);
-
+            card = retView.findViewById(R.id.cardStateView);
 
 
                     }
+
 
         @Override
         public void onItemSelected() {
@@ -187,6 +214,21 @@ this.ge
         public void onItemClear() {
 
         }
+    }
+
+    private void checkBiggerStateCorrect(int i) {
+        if(s)
+    }
+
+    public class cardViewWrapper{
+        public Territory territory;
+        public CardView cardview;
+
+        public cardViewWrapper(Territory t , CardView c){
+            territory=t;
+            cardview = c;
+        }
+
     }
 
         }
