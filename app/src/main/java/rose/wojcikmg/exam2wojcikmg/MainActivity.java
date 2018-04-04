@@ -14,7 +14,7 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity {
 
     private StateAdaptor mStateAdaptor;
-    public static RecyclerView view;
+    public RecyclerView view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
 
             case R.id.action_order:
-                    mStateAdaptor.biggerState();
+                    mStateAdaptor.areaModeSelected();
                     return true;
 
             case R.id.action_shuffle:

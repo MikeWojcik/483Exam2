@@ -4,7 +4,6 @@ import android.graphics.Canvas;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 
 public class SwipeItemTouchCallback extends ItemTouchHelper.Callback {
 
@@ -52,7 +51,6 @@ public class SwipeItemTouchCallback extends ItemTouchHelper.Callback {
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         // Notify the adapter of the dismissal
-        Log.d("Testing", "Pos " +viewHolder.getAdapterPosition() + "");
         mAdaptor.onItemDismiss(viewHolder.getAdapterPosition(),direction);
 
     }

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -22,21 +23,21 @@ import java.util.Random;
 public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> implements ItemTouchHelperAdaptor{
 
     private Context myContext;
-    ArrayList<cardViewWrapper> mStates = new ArrayList<>();
+    ArrayList<stateCardWrapper> mStates = new ArrayList<>();
     private ArrayList<Territory> allStates;
     private Random mRandom = new Random();
     public static int score;
-    private int currentCapitalSelection;
-    private MainActivity m;
-    private cardViewWrapper[] sizeChoices;
+    private int lastTappedCard;
+    private MainActivity main;
+    private stateCardWrapper[] sizeChoices;
 
 
 
     public StateAdaptor(Context context){
-        sizeChoices = new cardViewWrapper[0];
+        sizeChoices = new stateCardWrapper[0];
         myContext = context;
         allStates = new ArrayList<>();
-        currentCapitalSelection = -1;
+        lastTappedCard = -1;
         allStates.addAll(FileUtils.loadFromJsonArray(myContext));
         score = 0;
 
@@ -49,7 +50,7 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
 
     public StateAdaptor(Context context, MainActivity main){
         this(context);
-        m = main;
+        this.main = main;
     }
 
     public void setNumItems(int num){
@@ -58,6 +59,8 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
             addState();
         }
         notifyDataSetChanged();
+        score = 0;
+        updateScore();
     }
 
 
@@ -92,37 +95,37 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
         int rand = mRandom.nextInt(allStates.size());
 
         //loops until all states are unique
-        for(cardViewWrapper c: mStates){
+        for(stateCardWrapper c: mStates){
         if(c.territory.equals(allStates.get(rand))) {
             addState();
             return;
         }
         }
         //deletes from unused states so quiz can end after all states are done
-        mStates.add(new cardViewWrapper(allStates.get(rand), null));
+        mStates.add(new stateCardWrapper(allStates.get(rand), null));
 
     }
 
-    public void removeStateCapital(int pos){
-        Snackbar snack = Snackbar.make(MainActivity.view,mStates.get(pos).territory.capital, Snackbar.LENGTH_INDEFINITE );
+    public void tappedForCapital(int pos){
+        Snackbar snack = Snackbar.make(main.view,mStates.get(pos).territory.capital, Snackbar.LENGTH_INDEFINITE );
 
         View snackbarView = snack.getView();
 
-// change snackbar text color
         int snackbarTextId = android.support.design.R.id.snackbar_text;
         TextView textView = (TextView)snackbarView.findViewById(snackbarTextId);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 48);
         snack.show();
 
-        currentCapitalSelection = pos;
+        lastTappedCard = pos;
 
     }
 
-    public void biggerState(){
-        sizeChoices = new cardViewWrapper[2];
+    public void areaModeSelected(){
+        sizeChoices = new stateCardWrapper[2];
 
         sizeChoices[0] = mStates.get(mRandom.nextInt(mStates.size()));
 
+        //adds two states from the menu into the sizeChoices array, making sure that they are not duplicates
                int toHighlight ;
 
               do {
@@ -132,26 +135,27 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
 
                sizeChoices[1] = mStates.get(toHighlight);
 
-               for(cardViewWrapper c : sizeChoices){
+               for(stateCardWrapper c : sizeChoices){
                c.cardview.setCardBackgroundColor(myContext.getResources().getColor(R.color.highlighted));
            }
 
        }
 
-
-
     public void shuffle(){
-        ArrayList<cardViewWrapper> temp = new ArrayList<>();
-        temp.addAll(mStates);
 
-        mStates = new ArrayList<>();
+        Collections.shuffle(mStates);
         notifyDataSetChanged();
-
-        while(temp.size()!= 0){
-            int posToGet = mRandom.nextInt(temp.size());
-            mStates.add(temp.get(posToGet));
-            temp.remove(posToGet);
-        }
+//        ArrayList<stateCardWrapper> temp = new ArrayList<>();
+//        temp.addAll(mStates);
+//
+//        mStates = new ArrayList<>();
+//        notifyDataSetChanged();
+//
+//        while(temp.size()!= 0){
+//            int posToGet = mRandom.nextInt(temp.size());
+//            mStates.add(temp.get(posToGet));
+//            temp.remove(posToGet);
+//        }
     }
 
     @Override
@@ -162,20 +166,8 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
     @Override
     public void onItemDismiss(int position, int direction) {
 
-        if(position == currentCapitalSelection) {
-
-
-            if (direction == 16) {
-                score -=1;
-
-
-            } else if (direction == 32) {
-                score +=2;
-            }
-            currentCapitalSelection = -1;
-            updateScore();
-            mStates.remove(position);
-            notifyItemRemoved(position);
+        if(position == lastTappedCard) {
+            checkCapitalResponse(position, direction);
         }
 
         //handles invalid swiping
@@ -184,14 +176,15 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
             mStates.remove(position);
             notifyItemRemoved(position);
 
-            mStates.add(position, new cardViewWrapper(reAdd, null));
+            mStates.add(position, new stateCardWrapper(reAdd, null));
             notifyItemInserted(position);
 
 
+            //handles swiping away during Area Mode
             if (sizeChoices.length > 0) {
                 for (int i = 0; i < 2; i++) {
                     if (reAdd.equals(sizeChoices[i].territory)) {
-                        checkBiggerStateCorrect(i);
+                        areaModeCheckResponse(i);
                         return;
                     }
                 }
@@ -200,16 +193,34 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
         }
 
 //starts congradulations activity Handler
+        startCongrats();
+
+    }
+
+    private void startCongrats() {
         if(mStates.size() == 0){
             Intent intent = new Intent(myContext, FullscreenActivity.class);
             myContext.startActivity(intent);
 
         }
+    }
 
+    private void checkCapitalResponse(int position, int direction) {
+        if (direction == 16) {
+            score -=1;
+
+
+        } else if (direction == 32) {
+            score +=2;
+        }
+        lastTappedCard = -1;
+        updateScore();
+        mStates.remove(position);
+        notifyItemRemoved(position);
     }
 
     public void updateScore(){
-        m.getSupportActionBar().setTitle(m.getResources().getQuantityString(R.plurals.score, this.score, this.score));
+        main.getSupportActionBar().setTitle(main.getResources().getQuantityString(R.plurals.score, this.score, this.score));
     }
 
 
@@ -225,14 +236,16 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
 
                 @Override
                 public void onClick(View view) {
-                    //deals with normal senario
+                    //deals with capital senario
                     if(sizeChoices.length ==0 ) {
-                        removeStateCapital(getAdapterPosition());
+                        tappedForCapital(getAdapterPosition());
                     }
+
+                    //handles the area possibility
                     else{
                         for(int i = 0; i < 2; i++){
                             if(sizeChoices[i].cardview.equals(card)){
-                                checkBiggerStateCorrect(i);
+                                areaModeCheckResponse(i);
                                 return;
                             }
                         }
@@ -259,37 +272,37 @@ public class StateAdaptor extends RecyclerView.Adapter<StateAdaptor.ViewHolder> 
         }
     }
 
-    private void checkBiggerStateCorrect(int i) {
+    private void areaModeCheckResponse(int i) {
         String temp = "";
         int otherSizeChoice = (i + 1)%2;
 
         if(sizeChoices[i].territory.area > sizeChoices[otherSizeChoice].territory.area){
 
             temp = sizeChoices[i].territory.toString() + " > " + sizeChoices[otherSizeChoice].territory.toString();
-            Snackbar.make(MainActivity.view, m.getString(R.string.yesStr)+" " +temp ,  Snackbar.LENGTH_INDEFINITE ).show();
+            Snackbar.make(main.view, main.getString(R.string.yesStr)+" " +temp ,  Snackbar.LENGTH_INDEFINITE ).show();
             score +=4;
         }
         else if(sizeChoices[i].territory.area < sizeChoices[otherSizeChoice].territory.area){
             temp = sizeChoices[i].territory.toString() + " < " + sizeChoices[otherSizeChoice].territory.toString();
-            Snackbar.make(MainActivity.view, m.getString(R.string.noStr)+ " " +temp ,  Snackbar.LENGTH_INDEFINITE ).show();
+            Snackbar.make(main.view, main.getString(R.string.noStr)+ " " +temp ,  Snackbar.LENGTH_INDEFINITE ).show();
             score-=3;
 
         }
         updateScore();
 
-        for(cardViewWrapper c : sizeChoices){
+        for(stateCardWrapper c : sizeChoices){
             c.cardview.setCardBackgroundColor(myContext.getColor(R.color.whiteColor));
         }
-        sizeChoices = new cardViewWrapper[0];
+        sizeChoices = new stateCardWrapper[0];
 
 
     }
 
-    public class cardViewWrapper{
+    public class stateCardWrapper {
         public Territory territory;
         public CardView cardview;
 
-        public cardViewWrapper(Territory t , CardView c){
+        public stateCardWrapper(Territory t , CardView c){
             territory=t;
             cardview = c;
         }
